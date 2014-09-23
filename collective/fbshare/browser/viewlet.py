@@ -93,6 +93,7 @@ class OpenGraphMetaViewlet(SiteOpenGraphMetaViewlet):
 
             if hasattr(context, 'getField'):
 
+                import pdb;pdb.set_trace()
                 # Note that the ogImage field is Milieudefensie specific !!!
                 ogimage = self.context.getField('ogImage')
                 image = self.context.getField('image')
@@ -100,7 +101,7 @@ class OpenGraphMetaViewlet(SiteOpenGraphMetaViewlet):
                 if ogimage.get_size(context) > 0:
                     image = ogimage
 
-                if image.get_size(context) == 0 and HAS_LEADIMAGE:
+                if not image and HAS_LEADIMAGE:
                     image = context.getField(IMAGE_FIELD_NAME)
 
                 if image and image.get_size(context) > 0:
