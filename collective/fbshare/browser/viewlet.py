@@ -90,14 +90,21 @@ class OpenGraphMetaViewlet(SiteOpenGraphMetaViewlet):
             img_size = settings.content_image_size
             context = aq_inner(self.context)
             obj_url = context.absolute_url()
+
             if hasattr(context, 'getField'):
-                field = self.context.getField('image')
-                if not field and HAS_LEADIMAGE:
-                    field = context.getField(IMAGE_FIELD_NAME)
-                if field and field.get_size(context) > 0:
-                    if img_size:
-                        return u'%s/%s_%s' % (obj_url, field.getName(), img_size)
-                    return u'%s/%s' % (obj_url, field.getName())
+
+                # Note that the ogImage field is Milieudefensie specific !!!
+                ogimage = self.context.getField('ogImage')
+                image = ogimage or self.context.getField('image')
+
+                if not image and HAS_LEADIMAGE:
+                    image = context.getField(IMAGE_FIELD_NAME)
+
+                if image and image.get_size(context) > 0:
+                    if img_size and not ogimage:
+                        return u'%s/%s_%s' % (obj_url, image.getName(), img_size)
+                    return u'%s/%s' % (obj_url, image.getName())
+
             elif hasattr(context, 'image'):
                 # maybe a dexterity content type
                 if context.image.size > 0 and img_size:
