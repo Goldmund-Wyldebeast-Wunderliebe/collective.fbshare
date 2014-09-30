@@ -95,13 +95,19 @@ class OpenGraphMetaViewlet(SiteOpenGraphMetaViewlet):
 
                 # Note that the ogImage field is Milieudefensie specific !!!
                 ogimage = self.context.getField('ogImage')
-                image = self.context.getField('image')
+                image = None
 
+                # Prio 1: opengraph image
                 if ogimage.get_size(context) > 0:
                     image = ogimage
 
+                # Prio 2: lead image
                 if not image and HAS_LEADIMAGE:
                     image = context.getField(IMAGE_FIELD_NAME)
+
+                # Prio 3: the content item's image
+                if not image:
+                    image = self.context.getField('image')
 
                 if image and image.get_size(context) > 0:
                     if img_size and not ogimage:
